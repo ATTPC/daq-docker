@@ -20,4 +20,9 @@ RUN mkdir -p /daq/ACQ_HOST/2015-10-20 && \
 RUN groupadd -g 1000 attpc && useradd -u 1000 -g attpc attpc
 USER attpc
 
-CMD /bin/tcsh
+RUN touch /home/attpc/.tcshrc && \ 
+    echo source /daq/ACQ_HOST/latest/Scripts/SetEnvACQ_ATTPC >> /home/attpc/.tcshrc
+
+ENTRYPOINT ["/bin/tcsh", "-c"]
+
+CMD ["tcsh"]

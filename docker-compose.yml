@@ -1,0 +1,93 @@
+version: '2'
+services:
+    polyorb:
+        build: ./polyorb
+        image: attpc/polyorb
+        container_name: pocos
+        networks:
+            - daqnet
+        ports:
+            - "2809:2809"
+        volumes:
+            - narval_conf:/daq/.narval
+
+    narval_naming:
+        build: ./narval_naming
+        image: attpc/narval_naming
+        container_name: narval
+        networks:
+            - daqnet
+        volumes:
+            - narval_conf:/daq/.narval
+        depends_on:
+            - polyorb
+
+    aws_shell:
+        build: ./aws_shell
+        image: attpc/aws_shell
+        container_name: aws
+        networks:
+            - daqnet
+        environment:
+            - POLYORB_HOST=pocos
+        ports:
+            - "6080:6080"
+        volumes:
+            - narval_conf:/daq/.narval
+        depends_on:
+            - polyorb
+            - narval_naming
+
+    rclog:
+        build: ./rclog
+        image: attpc/rclog
+        container_name: rclog
+        networks:
+            - daqnet
+        environment:
+            - RCC_EXPERIMENT_NAME=test
+        ports:
+            - "6912:6912"
+        volumes:
+            - $HOME/exp:/exp
+
+    rcc:
+        build: ./rcc
+        image: attpc/rcc
+        container_name: rcc
+        networks:
+            - daqnet
+        ports:
+            - "6911:6911"
+        volumes:
+            - $HOME/exp:/exp
+        environment:
+            - RCC_EXPERIMENT_NAME=test
+        depends_on:
+            - rclog
+
+    rccgui:
+        build: ./rccgui
+        image: attpc/rccgui
+        container_name: rccgui
+        networks:
+            - daqnet
+        ports:
+            - "4000:4000"
+        volumes:
+            - $HOME/exp:/exp
+            - narval_conf:/daq/.narval
+            - /tmp/.X11-unix/X0:/tmp/.X11-unix/X0
+        environment:
+            - DISPLAY=${DISPLAY}
+            - RCC_EXPERIMENT_NAME=test
+        depends_on:
+            - rcc
+
+networks:
+    daqnet:
+        driver: bridge
+
+volumes:
+    narval_conf:
+        driver: local

@@ -1,8 +1,11 @@
-FROM attpc/rccbase
+FROM attpc/daq
 MAINTAINER Josh Bradt <bradt@nscl.msu.edu>
 
-ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${RCC_EXE}
+COPY launch_rcc.sh /usr/local/bin/
+RUN chmod a+x /usr/local/bin/launch_rcc.sh
 
-EXPOSE 6911
+EXPOSE 6911 6913
 
-CMD java -cp ${RCC_EXE}/..:${RCC_EXE}/../log4j-1.3alpha-7.jar RunControlServer 
+USER attpc
+
+CMD ["launch_rcc.sh"]

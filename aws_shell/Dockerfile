@@ -1,6 +1,11 @@
 FROM attpc/daq
 MAINTAINER Josh Bradt <bradt@nscl.msu.edu>
 
+COPY launch_aws.sh /usr/local/bin/
+RUN chmod a+x /usr/local/bin/launch_aws.sh
+
 EXPOSE 6080
 
-CMD aws_shell --aws_server_port 6080 --automatic-script-loading true
+USER attpc
+
+CMD ["launch_aws.sh"]

@@ -1,18 +1,22 @@
 FROM attpc/daq
 MAINTAINER Josh Bradt <bradt@nscl.msu.edu>
 
-ENV RCC_EXE /daq/ACQ_HOST/latest/RCC/Linux-x86_64
-ENV RCC_PROPERTIES /home/attpc/rcc.properties
-ENV RCC_HOST rcc
-ENV RCC_PORT 6911
+COPY jre-*.rpm /tmp/
+RUN yum -y install /tmp/jre*.rpm && rm /tmp/jre*.rpm
 
-ENV RCLOG_EXE /daq/ACQ_HOST/latest/RCLOG
-ENV RCLOG_PROPERTIES /home/attpc/rclog.properties
-ENV RCLOG_HOST rclog
-ENV RCLOG_PORT 6912
+ENV EXP_DIR=/exp
 
-ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${RCC_EXE}
+ENV RCC_EXE=/daq/ACQ_HOST/latest/RCC/Linux-x86_64 \
+    RCC_PROPERTIES=${CFG_DIR}/rcc.properties \
+    RCC_HOST=rcc \
+    RCC_PORT=6911
 
-COPY *.properties /home/attpc/
+ENV RCLOG_EXE=/daq/ACQ_HOST/latest/RCLOG \
+    RCLOG_PROPERTIES=${CFG_DIR}/rclog.properties \
+    RCLOG_HOST=rclog \
+    RCLOG_PORT=6912
 
-CMD tcsh
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RCC_EXE} \
+    PATH=${PATH}:${RCC_EXE}
+
+COPY *.properties ${CFG_DIR}/

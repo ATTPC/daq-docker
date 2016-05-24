@@ -1,42 +1,5 @@
 version: '2'
 services:
-    polyorb:
-        build: ./polyorb
-        image: attpc/polyorb
-        container_name: pocos
-        networks:
-            - daqnet
-        ports:
-            - "2809:2809"
-        volumes:
-            - narval_conf:/daq/.narval
-
-    narval_naming:
-        build: ./narval_naming
-        image: attpc/narval_naming
-        container_name: narval
-        networks:
-            - daqnet
-        volumes:
-            - narval_conf:/daq/.narval
-        depends_on:
-            - polyorb
-
-    aws_shell:
-        build: ./aws_shell
-        image: attpc/aws_shell
-        container_name: aws
-        networks:
-            - daqnet
-        environment:
-            - POLYORB_HOST=pocos
-        ports:
-            - "6080:6080"
-        volumes:
-            - narval_conf:/daq/.narval
-        depends_on:
-            - polyorb
-            - narval_naming
 
     rclog:
         build: ./rclog
@@ -66,6 +29,36 @@ services:
         depends_on:
             - rclog
 
+    narval-master:
+        build: ./narval
+        image: attpc/narval
+        container_name: narval-master
+        networks:
+            - daqnet
+        ports:
+            - "2809:2809"
+            - "6080:6080"
+        volumes:
+            - $HOME/exp:/exp
+            - narval_conf:/daq/.narval
+        depends_on:
+            - rclog
+
+    narval-worker:
+        build: ./narval
+        image: attpc/narval
+        container_name: narval-worker
+        networks:
+            - daqnet
+        ports:
+            - 40000
+        volumes:
+            - $HOME/exp:/exp
+            - narval_conf:/daq/.narval
+        depends_on:
+            - narval-master
+        command: launch_worker.sh
+
     rccgui:
         build: ./rccgui
         image: attpc/rccgui
@@ -77,9 +70,9 @@ services:
         volumes:
             - $HOME/exp:/exp
             - narval_conf:/daq/.narval
-            - /tmp/.X11-unix/X0:/tmp/.X11-unix/X0
+            - $HOME/.Xauthority:/home/attpc/.Xauthority:ro 
         environment:
-            - DISPLAY=${DISPLAY}
+            - DISPLAY=35.9.62.26:10
             - RCC_EXPERIMENT_NAME=test
         depends_on:
             - rcc

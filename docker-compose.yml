@@ -52,12 +52,26 @@ services:
             - daqnet
         ports:
             - 40000
+            - 22
         volumes:
             - $HOME/exp:/exp
             - narval_conf:/daq/.narval
         depends_on:
             - narval-master
         command: launch_worker.sh
+
+    eccserver:
+        build: ./eccserver
+        image: attpc/eccserver
+        container_name: eccserver
+        networks:
+            - daqnet
+        ports:
+            - 8083
+            - 46011
+        volumes:
+            - $HOME/exp:/exp
+            - $HOME/configs:/daq/Configs
 
     rccgui:
         build: ./rccgui

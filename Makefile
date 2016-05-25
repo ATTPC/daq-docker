@@ -23,14 +23,8 @@ daqbase/timestamp: daqbase/Dockerfile
 daq: daq/timestamp
 daq/timestamp: daq/Dockerfile daqbase
 
-polyorb: polyorb/timestamp
-polyorb/timestamp: polyorb/Dockerfile polyorb/launch_naming.sh daq
-
-narval_naming: narval_naming/timestamp
-narval_naming/timestamp: narval_naming/Dockerfile daq
-
-aws_shell: aws_shell/timestamp
-aws_shell/timestamp: aws_shell/Dockerfile daq
+narval: narval/timestamp
+narval/timestamp: narval/Dockerfile
 
 rccbase: rccbase/timestamp
 rccbase/timestamp: rccbase/Dockerfile daq

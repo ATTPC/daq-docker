@@ -1,8 +1,0 @@
-FROM attpc/daq
-MAINTAINER Josh Bradt <bradt@nscl.msu.edu>
-
-USER attpc
-
-ENTRYPOINT ["/bin/bash", "-c"]
-
-CMD ["sleep 5 && narval_naming_service"]

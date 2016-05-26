@@ -4,7 +4,7 @@ DOCKERBUILD = sudo docker build
 	$(DOCKERBUILD) -t attpc/$* ./$* && \
 	touch $@
 
-all: polyorb narval_naming aws_shell rclog rcc rccgui eccserver
+all: narval rclog rcc rccgui eccserver
 .PHONY: all
 default: all
 
@@ -24,19 +24,16 @@ daq: daq/timestamp
 daq/timestamp: daq/Dockerfile daqbase
 
 narval: narval/timestamp
-narval/timestamp: narval/Dockerfile
-
-rccbase: rccbase/timestamp
-rccbase/timestamp: rccbase/Dockerfile daq
+narval/timestamp: narval/Dockerfile daq
 
 rclog: rclog/timestamp
-rclog/timestamp: rclog/Dockerfile rccbase
+rclog/timestamp: rclog/Dockerfile daq
 
 rcc: rcc/timestamp
-rcc/timestamp: rcc/Dockerfile rccbase
+rcc/timestamp: rcc/Dockerfile daq
 
 rccgui: rccgui/timestamp
-rccgui/timestamp: rccgui/Dockerfile rccbase
+rccgui/timestamp: rccgui/Dockerfile daq
 
 clean:
 	rm -f */timestamp

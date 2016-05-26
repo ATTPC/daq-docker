@@ -3,8 +3,6 @@ MAINTAINER Josh Bradt <bradt@nscl.msu.edu>
 
 EXPOSE 4000
 
-USER attpc
-
 WORKDIR /daq/ACQ_HOST/latest/RCC_GUI
 
 ENTRYPOINT ["/bin/bash", "-c"]

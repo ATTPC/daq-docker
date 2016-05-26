@@ -67,5 +67,8 @@ ENV RCC_GUI_PROPERTIES=${RCC_CONFIG}/rcc_gui.properties
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${RCC_EXE} \
     PATH=${PATH}:${RCC_EXE}
 
+# RCC gets angry if USER is unset
+ENV USER=root
+
 # Install configs for RCC, RCLOG, and RCCGUI
 COPY *.properties ${RCC_CONFIG}/

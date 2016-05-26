@@ -24,8 +24,10 @@ services:
             - "6911:6911"
         volumes:
             - $HOME/exp:/exp
+            - $HOME/daq/Configs:/daq/Configs
         environment:
             - RCC_EXPERIMENT_NAME=test
+            - USER=root
         depends_on:
             - rclog
 
@@ -71,7 +73,7 @@ services:
             - 46011
         volumes:
             - $HOME/exp:/exp
-            - $HOME/configs:/daq/Configs
+            - $HOME/daq/Configs:/daq/Configs
 
     rccgui:
         build: ./rccgui
@@ -84,9 +86,10 @@ services:
         volumes:
             - $HOME/exp:/exp
             - narval_conf:/daq/.narval
-            - $HOME/.Xauthority:/home/attpc/.Xauthority:ro 
+       #     - $HOME/.Xauthority:/home/attpc/.Xauthority:ro 
+            - /tmp/.X11-unix/X0:/tmp/.X11-unix/X0
         environment:
-            - DISPLAY=35.9.62.26:10
+            - DISPLAY=:0
             - RCC_EXPERIMENT_NAME=test
         depends_on:
             - rcc
